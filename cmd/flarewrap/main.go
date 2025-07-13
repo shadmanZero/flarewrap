@@ -22,10 +22,17 @@ func main() {
 	}
 
 	fw := flarewrap.NewFlarewrap("/tmp/flarewrap", path, DEFAULT_VMLINUX)
-	image := fw.NewImage("alpine:latest","alpine")
-	machine := fw.NewMachine(1, 1024, 1024*5, "default",image)
-	fw.Start(ctx, machine)
-	fmt.Println(machine)
+	image := fw.NewImage("docker.io/library/alpine:latest", "alpine")
+	machine := fw.NewMachine(1, 1024, 1024*5, "default", image)
+	
+	fmt.Println("Starting machine:", machine)
+	
+	if err := fw.Start(ctx, machine); err != nil {
+		fmt.Printf("Failed to start machine: %v\n", err)
+		os.Exit(1)
+	}
+	
+	fmt.Println("Machine started successfully!")
 
 
 }
