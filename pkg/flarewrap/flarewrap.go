@@ -48,7 +48,7 @@ func (f *Flarewrap) NewMachine(cpuCores, memoryMB, storageMB int, name string, i
 		StorageMB:   storageMB,
 		StorageType: "default",
 		Name:        name,
-		Image:       image.ImageName,
+		Image:       image.ImageRef,
 	}
 }
 
