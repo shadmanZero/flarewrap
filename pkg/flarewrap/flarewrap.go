@@ -82,13 +82,13 @@ func (f *Flarewrap) Start(ctx context.Context, machine *Machine) error {
 	// Create unique snapshot key
 	snapKey := fmt.Sprintf("%s-%s", machine.Name, machine.Image)
 
-	// Get the image's unpacked snapshot key (this is the parent)
-	imageSnapKey := img.Target().Digest.String()
+	// Get the image's target digest - this is what containerd uses for the unpacked snapshot
+	imageDigest := img.Target().Digest.String()
 
-	// Create snapshot from the image's unpacked layers
-	fmt.Printf("📦 Creating snapshot %q...\n", snapKey)
-	if _, err := svc.Prepare(ctx, snapKey, imageSnapKey); err != nil {
-		return fmt.Errorf("snapshot prepare failed: %w", err)
+	// Try to create a view snapshot (read-only) from the unpacked image
+	fmt.Printf("📦 Creating view snapshot %q from %q...\n", snapKey, imageDigest)
+	if _, err := svc.View(ctx, snapKey, imageDigest); err != nil {
+		return fmt.Errorf("snapshot view failed: %w", err)
 	}
 
 	// Get mounts for the snapshot
